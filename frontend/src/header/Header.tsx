@@ -1,15 +1,27 @@
 import ModeOfTravelIcon from "@mui/icons-material/ModeOfTravel";
 import { AppBar, Tab, Tabs, Toolbar } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
 
-const links = [
+const publicLinks = [
   { label: "Home", path: "/" },
   { label: "Diaries", path: "/diaries" },
-  { label: "Auth", path: "/auth" },
+];
+
+const guestLinks = [...publicLinks, { label: "Auth", path: "/auth" }];
+
+const userLinks = [
+  ...publicLinks,
+  { label: "Add", path: "/add" },
+  { label: "Profile", path: "/profile" },
 ];
 
 export default function Header() {
   const { pathname } = useLocation();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const links = userId ? userLinks : guestLinks;
   const activeTab = links.find((link) => link.path === pathname);
 
   return (

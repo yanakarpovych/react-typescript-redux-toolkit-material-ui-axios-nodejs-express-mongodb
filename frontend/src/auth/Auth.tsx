@@ -2,6 +2,9 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { isAxiosError } from "axios";
 import { loginUser, signupUser } from "../api-helpers/helpers";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "../store";
 
 export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
@@ -13,6 +16,8 @@ export default function Auth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -55,8 +60,11 @@ export default function Auth() {
         setIsSignup(false);
         setSuccess("Account created. You can now log in.");
       } else {
-        await loginUser({ email, password });
-        setSuccess("Login successful.");
+        const userId = await loginUser({ email, password });
+
+        localStorage.setItem("userId", userId);
+        dispatch(login(userId));
+        navigate("/diaries", { replace: true });
       }
 
       setInputs((previous) => ({ ...previous, password: "" }));
