@@ -5,6 +5,7 @@ import Header from "./header/Header";
 import Home from "./home/Home";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
+import Add from "./diaries/Add";
 
 export default function App() {
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -25,9 +26,7 @@ export default function App() {
 
           <Route
             path="/add"
-            element={
-              userId ? <h1>Add a diary</h1> : <Navigate to="/auth" replace />
-            }
+            element={userId ? <Add /> : <Navigate to="/auth" replace />}
           />
 
           <Route

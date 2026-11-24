@@ -46,3 +46,20 @@ export async function loginUser(data: LoginData) {
 
   return response.data.id;
 }
+
+export type DiaryFormData = {
+  title: string;
+  description: string;
+  image: string;
+  location: string;
+  date: string;
+};
+
+export async function createPost(data: DiaryFormData, userId: string) {
+  const response = await api.post<{ post: DiaryPost }>("/posts", {
+    ...data,
+    user: userId,
+  });
+
+  return response.data.post;
+}
