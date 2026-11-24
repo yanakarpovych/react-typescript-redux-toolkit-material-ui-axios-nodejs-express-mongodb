@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #212121;
+  background-color: #fff;
+}
+
+main {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 24px 16px;
+}
