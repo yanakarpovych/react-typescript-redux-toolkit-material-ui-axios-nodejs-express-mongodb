@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routing/user-routes.js";
 import postRouter from "./routing/post-routes.js";
+import cors from "cors";
 
 const app = express();
 
@@ -15,6 +16,7 @@ if (!password) {
 }
 
 //middleware
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use("/user", userRouter);
 app.use("/posts", postRouter);
