@@ -18,6 +18,9 @@ export const getAllUsers: RequestHandler = async (_req, res, next) => {
     users = await User.find().select("-password");
   } catch (err) {
     console.log(err);
+  }
+
+  if (!users) {
     res.status(500).json({ message: "Failed to fetch users" });
   }
 
