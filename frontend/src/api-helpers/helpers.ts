@@ -19,3 +19,30 @@ export async function getAllPosts(signal?: AbortSignal): Promise<DiaryPost[]> {
 
   return response.data.posts;
 }
+
+type LoginData = {
+  email: string;
+  password: string;
+};
+
+type SignupData = LoginData & {
+  name: string;
+};
+
+export async function signupUser(data: SignupData) {
+  const response = await api.post<{ user: { _id: string } }>(
+    "/user/signup",
+    data,
+  );
+
+  return response.data.user._id;
+}
+
+export async function loginUser(data: LoginData) {
+  const response = await api.post<{ id: string; message: string }>(
+    "/user/login",
+    data,
+  );
+
+  return response.data.id;
+}
