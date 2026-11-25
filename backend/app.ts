@@ -9,6 +9,14 @@ const app = express();
 
 dotenv.config();
 
+const port = Number(process.env.PORT || 5000);
+
+const allowedOrigins = ["http://localhost:5173"];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 const password = process.env.DATABASE_PASSWORD;
 
 if (!password) {
@@ -16,7 +24,7 @@ if (!password) {
 }
 
 //middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use("/user", userRouter);
 app.use("/posts", postRouter);
@@ -27,10 +35,8 @@ mongoose
     `mongodb+srv://yanakarpovych0707_db_user:${encodeURIComponent(password)}@cluster0.ppnqwkq.mongodb.net/`,
   )
   .then(() =>
-    app.listen(5000, () =>
-      console.log(
-        "Connection successful & Listening to localhost on Port 5000",
-      ),
-    ),
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server is listening on port ${port}`);
+    })
   )
   .catch((err: unknown) => console.log(err));
