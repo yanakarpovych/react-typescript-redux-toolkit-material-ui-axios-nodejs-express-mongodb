@@ -7,13 +7,13 @@ export default function Home() {
       <Box sx={{ position: "relative" }}>
         <Box
           component="img"
-          src="/road.jpg"
+          src="/image.jpg"
           alt="Open road stretching into the distance"
+          
           sx={{
             display: "block",
             width: "100%",
-            height: { xs: 300, sm: 420, md: 500 },
-            objectFit: "cover",
+            height: "auto",
           }}
         />
 
@@ -26,8 +26,8 @@ export default function Home() {
             px: 2,
             py: 1,
             textAlign: "center",
-            color: "#171b21",
-            bgcolor: "#b2c8df",
+            color: "primary.contrastText",
+            bgcolor: "primary.main",
             fontFamily: '"Dancing Script", cursive',
             fontWeight: 700,
             fontSize: { xs: "2rem", md: "3rem" },
