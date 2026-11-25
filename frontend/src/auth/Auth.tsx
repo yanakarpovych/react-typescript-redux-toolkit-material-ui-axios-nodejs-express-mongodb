@@ -1,12 +1,15 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { isAxiosError } from "axios";
-import { loginUser, signupUser } from "../api-helpers/helpers";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { loginUser, signupUser } from "../api-helpers/helpers";
 import { login } from "../store";
 
 export default function Auth() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [isSignup, setIsSignup] = useState(false);
   const [inputs, setInputs] = useState({
     name: "",
@@ -15,37 +18,27 @@ export default function Auth() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
 
-    setInputs((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
+    setInputs((previous) => ({ ...previous, [name]: value }));
     setError("");
-    setSuccess("");
   }
 
   function switchMode() {
     setIsSignup((previous) => !previous);
     setInputs((previous) => ({ ...previous, password: "" }));
     setError("");
-    setSuccess("");
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setSuccess("");
 
+    const name = inputs.name.trim();
     const email = inputs.email.trim();
     const password = inputs.password;
-    const name = inputs.name.trim();
 
     if (isSignup && !name) {
       setError("Please enter your name.");
@@ -55,19 +48,13 @@ export default function Auth() {
     setIsSubmitting(true);
 
     try {
-      if (isSignup) {
-        await signupUser({ name, email, password });
-        setIsSignup(false);
-        setSuccess("Account created. You can now log in.");
-      } else {
-        const userId = await loginUser({ email, password });
+      const userId = isSignup
+        ? await signupUser({ name, email, password })
+        : await loginUser({ email, password });
 
-        localStorage.setItem("userId", userId);
-        dispatch(login(userId));
-        navigate("/diaries", { replace: true });
-      }
-
-      setInputs((previous) => ({ ...previous, password: "" }));
+      localStorage.setItem("userId", userId);
+      dispatch(login(userId));
+      navigate("/diaries", { replace: true });
     } catch (error) {
       if (isAxiosError<{ message?: string }>(error)) {
         setError(
@@ -135,7 +122,6 @@ export default function Auth() {
       />
 
       {error && <Alert severity="error">{error}</Alert>}
-      {success && <Alert severity="success">{success}</Alert>}
 
       <Button type="submit" variant="contained" disabled={isSubmitting}>
         {isSubmitting ? "Please wait…" : isSignup ? "Sign up" : "Log in"}

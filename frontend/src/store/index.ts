@@ -19,10 +19,13 @@ const authSlice = createSlice({
     login(state, action: PayloadAction<string>) {
       state.userId = action.payload;
     },
+    logout(state) {
+      state.userId = null;
+    },
   },
 });
 
-export const { login } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 
 export const store = configureStore({
   reducer: {

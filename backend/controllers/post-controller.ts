@@ -19,20 +19,15 @@ type AddPostBody = UpdatePostBody & {
   user?: unknown;
 };
 
-export const getAllPosts: RequestHandler = async (req, res) => {
-  let posts;
-
+export const getAllPosts: RequestHandler = async (_req, res) => {
   try {
-    posts = await Post.find();
-  } catch (err) {
-    console.log(err);
-  }
+    const posts = await Post.find().populate("user", "_id name");
 
-  if (!posts) {
+    res.status(200).json({ posts });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch posts" });
   }
-
-  return res.status(200).json({ posts });
 };
 
 export const addPost: RequestHandler<{}, unknown, AddPostBody> = async (

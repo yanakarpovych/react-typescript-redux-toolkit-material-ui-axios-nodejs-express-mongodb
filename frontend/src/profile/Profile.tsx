@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { isAxiosError } from "axios";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../store";
 import {
   deletePost,
   getUserProfile,
@@ -19,6 +21,14 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 });
 
 export default function Profile({ userId }: ProfileProps) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem("userId");
+    dispatch(logout());
+    navigate("/", { replace: true });
+  }
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadError, setLoadError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -90,6 +100,15 @@ export default function Profile({ userId }: ProfileProps) {
 
       <Typography>Name: {profile.name}</Typography>
       <Typography>Email: {profile.email}</Typography>
+      <Button
+        type="button"
+        variant="outlined"
+        color="warning"
+        onClick={handleLogout}
+        sx={{ mt: 2 }}
+      >
+        Log out
+      </Button>
 
       <Typography component="h2" variant="h5" sx={{ mt: 4, mb: 2 }}>
         My diaries ({profile.posts.length})
