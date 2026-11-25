@@ -79,3 +79,18 @@ export async function updatePost(id: string, data: DiaryFormData) {
 export async function deletePost(id: string) {
   await api.delete(`/posts/${id}`);
 }
+
+export type UserProfile = {
+  _id: string;
+  name: string;
+  email: string;
+  posts: DiaryPost[];
+};
+
+export async function getUserProfile(id: string, signal?: AbortSignal) {
+  const response = await api.get<{ user: UserProfile }>(`/user/${id}`, {
+    signal,
+  });
+
+  return response.data.user;
+}

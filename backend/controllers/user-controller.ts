@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import User from "../models/User.js";
 import { compareSync, hashSync } from "bcryptjs";
+import { isObjectIdOrHexString } from "mongoose";
 
 type LoginBody = {
   email?: unknown;
@@ -106,4 +107,29 @@ export const login: RequestHandler<{}, unknown, LoginBody> = async (
   return res
     .status(200)
     .json({ id: existingUser._id, message: "Login successful" });
+};
+
+export const getUserById: RequestHandler<{ id: string }> = async (req, res) => {
+  const { id } = req.params;
+
+  if (!isObjectIdOrHexString(id)) {
+    res.status(400).json({ message: "Invalid user ID" });
+    return;
+  }
+
+  try {
+    const user = await User.findById(id)
+      .select("_id name email posts")
+      .populate("posts");
+
+    if (!user) {
+      res.status(404).json({ message: "No user found" });
+      return;
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch user profile" });
+  }
 };

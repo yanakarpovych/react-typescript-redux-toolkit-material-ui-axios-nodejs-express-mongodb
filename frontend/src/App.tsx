@@ -1,12 +1,13 @@
+import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Auth from "./auth/Auth";
+import Add from "./diaries/Add";
 import Diaries from "./diaries/Diaries";
+import DiaryUpdate from "./diaries/DiaryUpdate";
 import Header from "./header/Header";
 import Home from "./home/Home";
-import { useSelector } from "react-redux";
+import Profile from "./profile/Profile";
 import type { RootState } from "./store";
-import Add from "./diaries/Add";
-import DiaryUpdate from "./diaries/DiaryUpdate";
 
 export default function App() {
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -33,9 +34,14 @@ export default function App() {
           <Route
             path="/profile"
             element={
-              userId ? <h1>Profile</h1> : <Navigate to="/auth" replace />
+              userId ? (
+                <Profile key={userId} userId={userId} />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
             }
           />
+
           <Route
             path="/post/:id"
             element={userId ? <DiaryUpdate /> : <Navigate to="/auth" replace />}

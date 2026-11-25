@@ -8,10 +8,10 @@ import {
   CardHeader,
   CardMedia,
   Divider,
-  Link,
   Typography,
 } from "@mui/material";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { Link } from "react-router-dom";
 
 type DiaryItemProps = {
   title: string;

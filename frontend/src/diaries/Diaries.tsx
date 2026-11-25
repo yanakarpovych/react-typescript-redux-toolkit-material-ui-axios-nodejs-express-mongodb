@@ -52,6 +52,7 @@ export default function Diaries() {
   }, []);
 
   async function handleDelete(id: string) {
+    if (deletingId !== null) return;
     if (!window.confirm("Delete this travel diary?")) return;
 
     setDeletingId(id);
@@ -105,7 +106,7 @@ export default function Diaries() {
               userId ===
                 (typeof post.user === "string" ? post.user : post.user?._id)
             }
-            isDeleting={deletingId !== null}
+            isDeleting={deletingId === post._id}
             onDelete={handleDelete}
           />
         ))}
