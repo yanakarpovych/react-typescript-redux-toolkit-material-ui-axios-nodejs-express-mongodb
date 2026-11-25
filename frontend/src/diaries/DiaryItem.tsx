@@ -1,11 +1,14 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
   Divider,
+  Link,
   Typography,
 } from "@mui/material";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -17,6 +20,10 @@ type DiaryItemProps = {
   location: string;
   date: string;
   author: string;
+  id: string;
+  isOwner: boolean;
+  isDeleting: boolean;
+  onDelete: (id: string) => void;
 };
 
 export default function DiaryItem({
@@ -26,6 +33,10 @@ export default function DiaryItem({
   location,
   date,
   author,
+  id,
+  isOwner,
+  isDeleting,
+  onDelete,
 }: DiaryItemProps) {
   return (
     <Card component="article" sx={{ width: "100%", boxShadow: 3 }}>
@@ -66,6 +77,28 @@ export default function DiaryItem({
           {description}
         </Typography>
       </CardContent>
+      {isOwner && (
+        <CardActions>
+          <Button
+            component={Link}
+            to={`/post/${id}`}
+            size="small"
+            disabled={isDeleting}
+          >
+            Edit
+          </Button>
+
+          <Button
+            type="button"
+            size="small"
+            color="error"
+            disabled={isDeleting}
+            onClick={() => onDelete(id)}
+          >
+            {isDeleting ? "Deleting…" : "Delete"}
+          </Button>
+        </CardActions>
+      )}
     </Card>
   );
 }

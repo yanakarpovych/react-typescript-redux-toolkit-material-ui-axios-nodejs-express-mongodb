@@ -3,7 +3,11 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { isAxiosError } from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createPost, type DiaryFormData } from "../api-helpers/helpers";
+import {
+  createPost,
+  updatePost,
+  type DiaryFormData,
+} from "../api-helpers/helpers";
 import type { RootState } from "../store";
 
 const initialInputs: DiaryFormData = {
@@ -14,11 +18,18 @@ const initialInputs: DiaryFormData = {
   date: "",
 };
 
-export default function Add() {
+type AddProps = {
+  edit?: {
+    id: string;
+    values: DiaryFormData;
+  };
+};
+
+export default function Add({ edit }: AddProps) {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const navigate = useNavigate();
 
-  const [inputs, setInputs] = useState(initialInputs);
+  const [inputs, setInputs] = useState(edit?.values ?? initialInputs);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -59,7 +70,11 @@ export default function Add() {
     setIsSubmitting(true);
 
     try {
-      await createPost(data, userId);
+      if (edit) {
+        await updatePost(edit.id, data);
+      } else {
+        await createPost(data, userId);
+      }
       navigate("/diaries");
     } catch (error) {
       if (isAxiosError<{ message?: string }>(error)) {
@@ -89,7 +104,7 @@ export default function Add() {
       }}
     >
       <Typography component="h1" variant="h4" sx={{ textAlign: "center" }}>
-        Add a travel diary
+        {edit ? "Edit travel diary" : "Add a travel diary"}
       </Typography>
 
       <TextField
@@ -140,7 +155,7 @@ export default function Add() {
       {error && <Alert severity="error">{error}</Alert>}
 
       <Button type="submit" variant="contained" disabled={isSubmitting}>
-        {isSubmitting ? "Publishing…" : "Publish diary"}
+        {isSubmitting ? "Saving…" : edit ? "Save changes" : "Publish diary"}
       </Button>
     </Box>
   );

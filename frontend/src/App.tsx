@@ -6,6 +6,7 @@ import Home from "./home/Home";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 import Add from "./diaries/Add";
+import DiaryUpdate from "./diaries/DiaryUpdate";
 
 export default function App() {
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -34,6 +35,10 @@ export default function App() {
             element={
               userId ? <h1>Profile</h1> : <Navigate to="/auth" replace />
             }
+          />
+          <Route
+            path="/post/:id"
+            element={userId ? <DiaryUpdate /> : <Navigate to="/auth" replace />}
           />
         </Routes>
       </main>

@@ -63,3 +63,19 @@ export async function createPost(data: DiaryFormData, userId: string) {
 
   return response.data.post;
 }
+
+export async function getPostById(id: string, signal?: AbortSignal) {
+  const response = await api.get<{ post: DiaryPost }>(`/posts/${id}`, {
+    signal,
+  });
+
+  return response.data.post;
+}
+
+export async function updatePost(id: string, data: DiaryFormData) {
+  await api.put(`/posts/${id}`, data);
+}
+
+export async function deletePost(id: string) {
+  await api.delete(`/posts/${id}`);
+}
